@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Rusternburg News</title>
+  <style>
+    /* Reset and base */
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      background: #f7f9fc;
+      color: #333;
+    }
+    a {
+      text-decoration: none;
+      color: #1a73e8;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    header {
+      background: #004080;
+      color: white;
+      padding: 1rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    header h1 {
+      margin: 0;
+      font-weight: 700;
+      letter-spacing: 2px;
+    }
+    nav a {
+      margin-left: 1.5rem;
+      font-weight: 600;
+      color: white;
+    }
+    nav a:hover {
+      color: #aaddff;
+    }
+    .container {
+      display: flex;
+      max-width: 1200px;
+      margin: 2rem auto;
+      gap: 2rem;
+      padding: 0 1rem;
+    }
+    main {
+      flex: 3;
+    }
+    aside {
+      flex: 1;
+      background: white;
+      padding: 1rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgb(0 0 0 / 0.1);
+      height: fit-content;
+    }
+    article {
+      background: white;
+      margin-bottom: 1.8rem;
+      padding: 1rem 1.5rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgb(0 0 0 / 0.1);
+    }
+    article h2 {
+      margin-top: 0;
+      color: #004080;
+    }
+    article .meta {
+      font-size: 0.85rem;
+      color: #777;
+      margin-bottom: 0.6rem;
+    }
+    article p {
+      line-height: 1.5;
+    }
+    aside h3 {
+      border-bottom: 2px solid #004080;
+      padding-bottom: 0.5rem;
+      margin-bottom: 1rem;
+      font-weight: 700;
+      color: #004080;
+    }
+    .sidebar-list {
+      list-style: none;
+      padding-left: 0;
+    }
+    .sidebar-list li {
+      margin-bottom: 0.7rem;
+    }
+    #searchInput {
+      width: 100%;
+      padding: 0.5rem 0.75rem;
+      margin-bottom: 1.5rem;
+      font-size: 1rem;
+      border: 2px solid #004080;
+      border-radius: 5px;
+    }
+    footer {
+      background: #004080;
+      color: white;
+      text-align: center;
+      padding: 1rem;
+      margin-top: 3rem;
+    }
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+        margin: 1rem;
+      }
+      aside {
+        order: -1;
+        margin-bottom: 2rem;
+      }
+    }
+  </style>
+  <!-- Firebase SDKs -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-analytics.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCIwLl4y-0KhBdt-bCr1tDkkmv38Aow-PE",
+      authDomain: "rusternburg-news-630da.firebaseapp.com",
+      projectId: "rusternburg-news-630da",
+      storageBucket: "rusternburg-news-630da.appspot.com",
+      messagingSenderId: "280865567719",
+      appId: "1:280865567719:web:d0bb14ad9d2f6887db4342",
+      measurementId: "G-JZRZBVET5S"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+  </script>
+</head>
+<body>
+  <header>
+    <h1>Rusternburg News</h1>
+    <nav>
+      <a href="#">Home</a>
+      <a href="#">World</a>
+      <a href="#">Politics</a>
+      <a href="#">Business</a>
+      <a href="#">Sports</a>
+      <a href="#">Entertainment</a>
+    </nav>
+  </header>
+  <div class="container">
+    <main>
+      <input type="text" id="searchInput" placeholder="Search news..." aria-label="Search news articles" />
+      <article>
+        <h2>Rusternburg Festival Celebrates Local Culture</h2>
+        <div class="meta">July 5, 2025 | By Jane Doe</div>
+        <p>The annual Rusternburg Festival kicked off this weekend...</p>
+      </article>
+      <article>
+        <h2>New Eco Park Opens in Rusternburg</h2>
+        <div class="meta">July 4, 2025 | By John Smith</div>
+        <p>Residents are excited about the new eco park opened near...</p>
+      </article>
+      <article>
+        <h2>Rusternburg School Wins National Science Competition</h2>
+        <div class="meta">July 3, 2025 | By Sarah Johnson</div>
+        <p>A team of students from Rusternburg High School took home...</p>
+      </article>
+      <article>
+        <h2>Local Business Expansion Creates Jobs</h2>
+        <div class="meta">July 2, 2025 | By Michael Lee</div>
+        <p>Rusternburg-based tech startup, GreenWave, announced...</p>
+      </article>
+      <article>
+        <h2>Community Garden Project Flourishes</h2>
+        <div class="meta">July 1, 2025 | By Emily Carter</div>
+        <p>The community garden initiative has grown rapidly...</p>
+      </article>
+    </main>
+    <aside>
+      <h3>Latest News</h3>
+      <ul class="sidebar-list">
+        <li><a href="#">City Council Approves New Library Funding</a></li>
+        <li><a href="#">Annual Marathon Scheduled for August</a></li>
+        <li><a href="#">Local Theater Opens New Play</a></li>
+        <li><a href="#">Rain Forecasted for Weekend</a></li>
+        <li><a href="#">Youth Soccer Team Wins Championship</a></li>
+      </ul>
+      <h3>Categories</h3>
+      <ul class="sidebar-list">
+        <li><a href="#">World</a></li>
+        <li><a href="#">Politics</a></li>
+        <li><a href="#">Business</a></li>
+        <li><a href="#">Sports</a></li>
+        <li><a href="#">Entertainment</a></li>
+        <li><a href="#">Lifestyle</a></li>
+      </ul>
+    </aside>
+  </div>
+  <footer>
+    <p>© 2025 Rusternburg News. All rights reserved. | Contact: info@rusternburgnews.co.za</p>
+  </footer>
+  <script>
+    // Search filter for articles
+    const searchInput = document.getElementById('searchInput');
+    const articles = document.querySelectorAll('main article');
+
+    searchInput.addEventListener('input', () => {
+     
