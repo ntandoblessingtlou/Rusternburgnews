@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Rusternburg News</title>
   <style>
-    /* Reset and base */
     * {
       box-sizing: border-box;
     }
@@ -61,6 +60,14 @@
       box-shadow: 0 2px 6px rgb(0 0 0 / 0.1);
       height: fit-content;
     }
+    #searchInput {
+      width: 100%;
+      padding: 0.5rem 0.75rem;
+      margin-bottom: 1.5rem;
+      font-size: 1rem;
+      border: 2px solid #004080;
+      border-radius: 5px;
+    }
     article {
       background: white;
       margin-bottom: 1.8rem;
@@ -80,6 +87,33 @@
     article p {
       line-height: 1.5;
     }
+    #postNews {
+      background: white;
+      padding: 1rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      margin-bottom: 2rem;
+    }
+    #postNews input,
+    #postNews textarea {
+      width: 100%;
+      margin-bottom: 0.75rem;
+      padding: 0.5rem;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    #postNews button {
+      background: #004080;
+      color: white;
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    #postNews button:hover {
+      background: #0066cc;
+    }
     aside h3 {
       border-bottom: 2px solid #004080;
       padding-bottom: 0.5rem;
@@ -94,14 +128,6 @@
     .sidebar-list li {
       margin-bottom: 0.7rem;
     }
-    #searchInput {
-      width: 100%;
-      padding: 0.5rem 0.75rem;
-      margin-bottom: 1.5rem;
-      font-size: 1rem;
-      border: 2px solid #004080;
-      border-radius: 5px;
-    }
     footer {
       background: #004080;
       color: white;
@@ -112,7 +138,6 @@
     @media (max-width: 768px) {
       .container {
         flex-direction: column;
-        margin: 1rem;
       }
       aside {
         order: -1;
@@ -120,10 +145,11 @@
       }
     }
   </style>
-  <!-- Firebase SDKs -->
+
+  <!-- Firebase & Firestore -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-analytics.js";
+    import { getFirestore, collection, addDoc, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyCIwLl4y-0KhBdt-bCr1tDkkmv38Aow-PE",
@@ -136,9 +162,79 @@
     };
 
     const app = initializeApp(firebaseConfig);
-    const analytics = getAnalytics(app);
+    const db = getFirestore(app);
+
+    window.addEventListener('DOMContentLoaded', () => {
+      const form = document.getElementById('newsForm');
+      const status = document.getElementById('postStatus');
+      const articlesSection = document.getElementById('articlesSection');
+      const searchInput = document.getElementById('searchInput');
+
+      // Load articles
+      async function loadArticles() {
+        articlesSection.innerHTML = '';
+        const q = query(collection(db, 'news'), orderBy('createdAt', 'desc'));
+        const snapshot = await getDocs(q);
+        snapshot.forEach(doc => {
+          const data = doc.data();
+          const article = document.createElement('article');
+          article.innerHTML = `
+            <h2>${data.title}</h2>
+            <div class="meta">${new Date(data.createdAt.toDate()).toDateString()} | By ${data.author}</div>
+            <p>${data.content}</p>
+          `;
+          articlesSection.appendChild(article);
+        });
+      }
+
+      // Handle form submit
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        status.textContent = '';
+
+        const title = document.getElementById('title').value.trim();
+        const author = document.getElementById('author').value.trim();
+        const content = document.getElementById('content').value.trim();
+
+        if (!title || !author || !content) {
+          status.style.color = 'red';
+          status.textContent = 'Please fill in all fields.';
+          return;
+        }
+
+        try {
+          await addDoc(collection(db, "news"), {
+            title,
+            author,
+            content,
+            createdAt: new Date()
+          });
+          status.style.color = 'green';
+          status.textContent = 'Article posted successfully!';
+          form.reset();
+          loadArticles();
+        } catch (error) {
+          status.style.color = 'red';
+          status.textContent = 'Error posting: ' + error.message;
+        }
+      });
+
+      // Search filter
+      searchInput.addEventListener('input', () => {
+        const value = searchInput.value.toLowerCase();
+        const articles = articlesSection.querySelectorAll('article');
+        articles.forEach(article => {
+          const match = article.innerText.toLowerCase().includes(value);
+          article.style.display = match ? 'block' : 'none';
+        });
+      });
+
+      // Initial load
+      loadArticles();
+    });
   </script>
 </head>
+
 <body>
   <header>
     <h1>Rusternburg News</h1>
@@ -151,35 +247,27 @@
       <a href="#">Entertainment</a>
     </nav>
   </header>
+
   <div class="container">
     <main>
       <input type="text" id="searchInput" placeholder="Search news..." aria-label="Search news articles" />
-      <article>
-        <h2>Rusternburg Festival Celebrates Local Culture</h2>
-        <div class="meta">July 5, 2025 | By Jane Doe</div>
-        <p>The annual Rusternburg Festival kicked off this weekend...</p>
-      </article>
-      <article>
-        <h2>New Eco Park Opens in Rusternburg</h2>
-        <div class="meta">July 4, 2025 | By John Smith</div>
-        <p>Residents are excited about the new eco park opened near...</p>
-      </article>
-      <article>
-        <h2>Rusternburg School Wins National Science Competition</h2>
-        <div class="meta">July 3, 2025 | By Sarah Johnson</div>
-        <p>A team of students from Rusternburg High School took home...</p>
-      </article>
-      <article>
-        <h2>Local Business Expansion Creates Jobs</h2>
-        <div class="meta">July 2, 2025 | By Michael Lee</div>
-        <p>Rusternburg-based tech startup, GreenWave, announced...</p>
-      </article>
-      <article>
-        <h2>Community Garden Project Flourishes</h2>
-        <div class="meta">July 1, 2025 | By Emily Carter</div>
-        <p>The community garden initiative has grown rapidly...</p>
-      </article>
+
+      <!-- Post form -->
+      <section id="postNews">
+        <h2>Post a News Article</h2>
+        <form id="newsForm">
+          <input type="text" id="title" placeholder="Title" required />
+          <input type="text" id="author" placeholder="Author" required />
+          <textarea id="content" placeholder="Content" rows="4" required></textarea>
+          <button type="submit">Post Article</button>
+        </form>
+        <p id="postStatus"></p>
+      </section>
+
+      <!-- Dynamic articles go here -->
+      <section id="articlesSection"></section>
     </main>
+
     <aside>
       <h3>Latest News</h3>
       <ul class="sidebar-list">
@@ -189,6 +277,7 @@
         <li><a href="#">Rain Forecasted for Weekend</a></li>
         <li><a href="#">Youth Soccer Team Wins Championship</a></li>
       </ul>
+
       <h3>Categories</h3>
       <ul class="sidebar-list">
         <li><a href="#">World</a></li>
@@ -200,13 +289,9 @@
       </ul>
     </aside>
   </div>
+
   <footer>
     <p>© 2025 Rusternburg News. All rights reserved. | Contact: info@rusternburgnews.co.za</p>
   </footer>
-  <script>
-    // Search filter for articles
-    const searchInput = document.getElementById('searchInput');
-    const articles = document.querySelectorAll('main article');
-
-    searchInput.addEventListener('input', () => {
-     
+</body>
+  </html>
